@@ -16,7 +16,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RepositorioCategoria {
     @Autowired
+    
     private InterfaceCategoria crud;
+    
+    
     public List<Categoria> getAll(){
         return (List<Categoria>) crud.findAll();
     }
