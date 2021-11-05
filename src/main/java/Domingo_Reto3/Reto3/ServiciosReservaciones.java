@@ -4,6 +4,7 @@
  */
 package Domingo_Reto3.Reto3;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Service;
  *
  * @author USUARIO
  */
-@Service
-public class ServiciosReservaciones {
+
+    @Service
+public class ServiciosReservaciones implements Serializable{
      @Autowired
     private RepositorioReservaciones metodosCrud;
 
@@ -26,39 +28,39 @@ public class ServiciosReservaciones {
         return metodosCrud.getAll();
     }
 
-    public Optional<Reservaciones> getReservation(int reservationId) {
-        return metodosCrud.getReservation(reservationId);
+    public Optional<Reservaciones> getReservation(int reservacionId) {
+        return metodosCrud.getReservacion(reservacionId);
     }
 
     public Reservaciones save(Reservaciones reservation){
         if(reservation.getIdReservation()==null){
             return metodosCrud.save(reservation);
         }else{
-            Optional<Reservaciones> e= metodosCrud.getReservation(reservation.getIdReservation());
-            if(e.isEmpty()){
+            Optional<Reservaciones> data= metodosCrud.getReservacion(reservation.getIdReservation());
+            if(data.isEmpty()){
                 return metodosCrud.save(reservation);
             }else{
                 return reservation;
             }
         }
-    }
-
+    }  
+    
     public Reservaciones update(Reservaciones reservation){
         if(reservation.getIdReservation()!=null){
-            Optional<Reservaciones> e= metodosCrud.getReservation(reservation.getIdReservation());
-            if(!e.isEmpty()){
+            Optional<Reservaciones> datos= metodosCrud.getReservacion(reservation.getIdReservation());
+            if(!datos.isEmpty()){
 
                 if(reservation.getStartDate()!=null){
-                    e.get().setStartDate(reservation.getStartDate());
+                    datos.get().setStartDate(reservation.getStartDate());
                 }
                 if(reservation.getDevolutionDate()!=null){
-                    e.get().setDevolutionDate(reservation.getDevolutionDate());
+                    datos.get().setDevolutionDate(reservation.getDevolutionDate());
                 }
                 if(reservation.getStatus()!=null){
-                    e.get().setStatus(reservation.getStatus());
+                    datos.get().setStatus(reservation.getStatus());
                 }
-                metodosCrud.save(e.get());
-                return e.get();
+                metodosCrud.save(datos.get());
+                return datos.get();
             }else{
                 return reservation;
             }
@@ -67,40 +69,42 @@ public class ServiciosReservaciones {
         }
     }
 
-    public boolean deleteReservation(int reservationId) {
-        Boolean aBoolean = getReservation(reservationId).map(reservation -> {
-            metodosCrud.delete(reservation);
+    public boolean delete(int reservacionId) {
+        Boolean aBoolean = getReservation(reservacionId).map(reservacion -> {
+            metodosCrud.delete(reservacion);
             return true;
         }).orElse(false);
         return aBoolean;
     }
     
-    public StatusReservas getReporteStatusReservaciones(){
-        List<Reservaciones>completed=metodosCrud.ReservationStatus("completed");
-        List<Reservaciones>cancelled=metodosCrud.ReservationStatus("cancelled");
-        return new StatusReservas(completed.size(),cancelled.size());
-        
-    }
+    public StatusReservas reporteStatusServicio (){
+	        List<Reservaciones>completed= metodosCrud.RepositorioStatus("completed");
+	        List<Reservaciones>cancelled= metodosCrud.RepositorioStatus("cancelled");
+	        
+	        return new StatusReservas(completed.size(), cancelled.size() );
+	    }
     
-    public List<Reservaciones> getReportesTiempoReservaciones(String dateA, String dateB){
-        SimpleDateFormat parser=new SimpleDateFormat ("yyyy-MM-dd");
-        Date datoUno=new Date();
-        Date datoDos=new Date();
-        
-        try{
-            datoUno=parser.parse(dateA);
-            datoDos=parser.parse(dateB);
-            }catch(ParseException evt){
-                evt.printStackTrace();
-            }if(datoUno.before(datoDos)){
-                return metodosCrud.ReservacionTiempo(datoUno, datoDos);
-            }else{
-                return new ArrayList<>();
-            }          
-    }
+    public List<Reservaciones> reporteTiempoServicio (String datoA, String datoB){
+	        SimpleDateFormat parser = new SimpleDateFormat ("yyyy-MM-dd");
+	        
+	        Date datoUno = new Date();
+	        Date datoDos = new Date();
+	        
+	        try{
+	             datoUno = parser.parse(datoA);
+	             datoDos = parser.parse(datoB);
+	        }catch(ParseException evt){
+	            evt.printStackTrace();
+	        }if(datoUno.before(datoDos)){
+	            return metodosCrud.RepositorioTiempo(datoUno, datoDos);
+	        }else{
+	            return new ArrayList<>();
+	        
+	        } 
+	    }
     
-    public List<ContadorClientes> servicioTopClientes(){
-        return metodosCrud.getTopClientes();
-    }
+    public List<Contador> reporteClientesServicio(){
+	            return metodosCrud.getClientesRepo();
+	        }
 }
 

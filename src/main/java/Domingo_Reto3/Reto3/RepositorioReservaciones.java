@@ -18,32 +18,36 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RepositorioReservaciones {
        @Autowired
-    private InterfaceReservaciones crud4;
+    private InterfaceReservaciones crud;
 
     public List<Reservaciones> getAll(){
-        return (List<Reservaciones>) crud4.findAll();
+        return (List<Reservaciones>) crud.findAll();
     }
-    public Optional<Reservaciones> getReservation(int id){
-        return crud4.findById(id);
+    public Optional<Reservaciones> getReservacion(int id){
+        return crud.findById(id);
     }
     public Reservaciones save(Reservaciones reservation){
-        return crud4.save(reservation);
+        return crud.save(reservation);
     }
     public void delete(Reservaciones reservation){
-        crud4.delete(reservation);
+        crud.delete(reservation);
     }
-     public List<Reservaciones> ReservationStatus(String status){
-        return crud4.findAllByStatus(status);
-    }
-    public List<Reservaciones> ReservacionTiempo(Date one, Date two){
-        return crud4.findAllByStartDateAfterAndStartDateBefore(one, two);
-    }
-    public List<ContadorClientes> getTopClientes(){
-        List <ContadorClientes> res=new ArrayList<>();
-        List<Object[]>report=crud4.countTotalReservationByClient();
-        for(int i=0; i<report.size();i++){
-            res.add(new ContadorClientes((Long)report.get(i)[1],(Cliente)report.get(i)[0]));
-        }
-        return res;
-    }
+    
+    public List<Reservaciones> RepositorioStatus (String status){
+	         return crud.findAllByStatus(status);
+	     }
+	     
+	     public List<Reservaciones> RepositorioTiempo (Date a, Date b){
+	         return crud.findAllByStartDateAfterAndStartDateBefore(a, b);
+	     
+	     }
+	     
+	     public List<Contador> getClientesRepo(){
+	         List<Contador> datos = new ArrayList<>();
+	         List<Object[]> report = crud.countTotalReservationsByClient();
+	         for(int i=0; i<report.size(); i++){
+	             datos.add(new Contador((Long)report.get(i)[1],(Cliente) report.get(i)[0]));
+	         }
+	         return datos;
+	     }
 }

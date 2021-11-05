@@ -44,27 +44,26 @@ public class ControladorReservaciones {
     @ResponseStatus(HttpStatus.CREATED)
     public Reservaciones save(@RequestBody Reservaciones reservation) {
         return servicio.save(reservation);
-    }
-    @PutMapping("/update")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Reservaciones update(@RequestBody Reservaciones reservation) {
-        return servicio.update(reservation);
-    }
+    }   
+    
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean delete(@PathVariable("id") int reservationId) {
-        return servicio.deleteReservation(reservationId);
-    }
-     @GetMapping("/report-status")
-    public StatusReservas getReservas(){
-        return servicio.getReporteStatusReservaciones();
-    }
-    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
-    public List<Reservaciones> getReservasTiempo(@PathVariable("dateOne")String dateOne, @PathVariable("dateTwo")String dateTwo){
-        return servicio.getReportesTiempoReservaciones(dateOne, dateTwo);
-    }
-    @GetMapping("/report-clients")
-    public List<ContadorClientes> getClientes(){
-        return servicio.servicioTopClientes();
-    }
+    public boolean delete(@PathVariable("id") int idReservacion) {
+        return servicio.delete(idReservacion);
+    }   
+    
+    @GetMapping("/report-status")
+	    public StatusReservas getReservas(){
+	        return servicio.reporteStatusServicio();
+	    }
+	    
+	    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
+	     public List<Reservaciones> getReservasTiempo (@PathVariable("dateOne")String dateOne, @PathVariable("dateTwo")String dateTwo ){
+	         return servicio.reporteTiempoServicio(dateOne, dateTwo);
+	     }
+	     
+	     @GetMapping("/report-clients")
+	     public List<Contador> getClientes(){
+	         return servicio.reporteClientesServicio();
+	     }
 }
